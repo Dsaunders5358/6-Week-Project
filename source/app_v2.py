@@ -212,5 +212,6 @@ def print_data_list(list):
 #region Variable Block
 products_list = [{"name" : "Cheese", "price" : "0.50" }, {"name" : "Pickle", "price" : "1.00" }]
 couriers_list = [{"name" : "Joe Bloggs", "number" : "0754561023"}, {"name" : "Jane Doe", "number" : "042316578"}]
+orders_list = [{}]
 #endregion
 program_start()
