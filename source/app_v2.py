@@ -64,7 +64,12 @@ def show_type_main_menu(type):
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
-        pass # Print Lists goes here
+        if type == "product":
+            print_data_list(products_list)
+        elif type == "courier":
+            print_data_list(couriers_list)
+        input("Press Enter to Continue")
+        return f"{type}s main"
     elif nav == "2":
         return f"{type}s add"
     elif nav == "3":
@@ -87,7 +92,7 @@ def show_product_add_menu():
     return "products main"
 def show_product_del_menu():
     print_title_stars("Delete a Product")
-    #insert function here which prints a list of keys from the product dictionary
+    print_data_list(products_list)
     print("Type index of product you wish to delete. 0 will exit")
     index = input("Option: ")
     #insert function which will remove an item from a dictionary
@@ -95,7 +100,7 @@ def show_product_del_menu():
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
-    #insert function here which prints a list of keys from the product dictionary
+    print_data_list(products_list)
     print("Type index of product you wish to change. 0 will exit")
     index = input("Option: ")
     #insert function which will go through the key and value pair of selected index and update it accordingly
@@ -112,7 +117,7 @@ def show_courier_add_menu():
     return "couriers main"
 def show_courier_del_menu():
     print_title_stars("Delete a courier")
-    # Insert function here which shows a list of current dictonaries in courier with their index number
+    print_data_list(couriers_list)
     print("Type index of courier you wish to delete. 0 will exit")
     index = input("Index: ")
     # Insert function here which will remove courier from list of dictionaries
@@ -120,7 +125,7 @@ def show_courier_del_menu():
     return "couriers main"
 def show_courier_update_menu():
     print_title_stars("Update a Courier")
-    #insert function to print an enumerated list of couriers dictionaries
+    print_data_list(couriers_list)
     print("Type index of courier you wish to change. 0 to exit")
     index = input("Option: ")
     #insert function which will go through the key and value pair of selected index and update it accordingly
@@ -132,7 +137,7 @@ def show_orders_main_menu():
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
-        pass #insert function for printing product list here
+        print_data_list(orders_list)
     elif nav == "2":
         return "orders add"
     elif nav == "3":
@@ -169,7 +174,7 @@ def show_orders_add_menu():
     return ("orders main")
 def show_orders_status_menu():
     print_title_stars("Update Order Status")
-    #Insert function here which shows list of orders with index value
+    print_data_list(orders_list)
     print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
     index = input("Order: ")
     if index == "0":
@@ -180,7 +185,7 @@ def show_orders_status_menu():
     return "orders main" 
 def show_orders_update_menu():
     print_title_stars("Updating Order Details")
-    #print a list of orders
+    print_data_list(orders_list)
     print("Which order would you like to update the details of. Type 0 to exit")
     index = input("Order: ")
     if index =="0":
@@ -191,7 +196,7 @@ def show_orders_update_menu():
     return "orders main"
 def show_orders_del_courier_menu():
     print_title_stars("Delete Courier from Order")
-    # show a list of orders
+    print_data_list(orders_list)
     print("Type index of order you would like to remove courier from. Type 0 to exit")
     index = input("Order: ")
     if index == "0":
@@ -200,5 +205,12 @@ def show_orders_del_courier_menu():
     #run function to remove courier from index
     print("Courier successfully removed from order")
     return "orders main"
+def print_data_list(list):
+    for counter, item in enumerate(list, 1):
+        print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
+#endregion
+#region Variable Block
+products_list = [{"name" : "Cheese", "price" : "0.50" }, {"name" : "Pickle", "price" : "1.00" }]
+couriers_list = [{"name" : "Joe Bloggs", "number" : "0754561023"}, {"name" : "Jane Doe", "number" : "042316578"}]
 #endregion
 program_start()

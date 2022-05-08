@@ -284,18 +284,6 @@ def delete_order_courier():  #delete order based on index
     except:
         print("Invalid Index detected, Returning to menu")
         delete_order_courier()
-
-def show_menu_type(menu):
-    menu = menu.lower()
-    if menu == "product main menu":
-        get_list_menu("product")
-    elif menu == "product add menu":
-        get_add_menu("courier")
-    elif menu == "courier main menu":
-        get_list_menu("courier")
-    elif menu == "courier add menu":
-        get_add_menu("courier")
-    elif menu == ""
 #endregion
 #region Variable_Block
 product_list = data.load_data("product")
