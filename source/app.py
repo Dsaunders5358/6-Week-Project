@@ -1,9 +1,10 @@
 #region import Block
 import data
+import csv
 #endregion
 #region Function_Block
-def print_stars(): # Formatting Line Break
-    print("***********************************")
+def print_stars(length): # Formatting Line Break
+    print("")
 def get_main_menu(): # First screen user will see when terminal is accessed.
     print_stars()
     print("Main Menu")
@@ -83,7 +84,6 @@ def print_list(type):  #prints list with index added
         list_type = order_list
     if len(list_type) > 0:
         for counter, value in enumerate(list_type, 1):
-            counter = str(counter) + ") "
             print(counter, value)
     else:
         print(f"No {type} in database")
@@ -284,6 +284,18 @@ def delete_order_courier():  #delete order based on index
     except:
         print("Invalid Index detected, Returning to menu")
         delete_order_courier()
+
+def show_menu_type(menu):
+    menu = menu.lower()
+    if menu == "product main menu":
+        get_list_menu("product")
+    elif menu == "product add menu":
+        get_add_menu("courier")
+    elif menu == "courier main menu":
+        get_list_menu("courier")
+    elif menu == "courier add menu":
+        get_add_menu("courier")
+    elif menu == ""
 #endregion
 #region Variable_Block
 product_list = data.load_data("product")
@@ -303,4 +315,6 @@ except:
     data.save_data(product_list, "product_list.txt")
     data.save_data(courier_list, "courier_list.txt")
     print("An error has occured. Exiting Program")
-    #test
+
+def show_main_menu():
+    print("Main Menu")
