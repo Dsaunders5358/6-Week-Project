@@ -18,4 +18,4 @@ def delete_product():
         else:
             return "none"
     except ValueError:
-        return "error" 
+        return "error"
