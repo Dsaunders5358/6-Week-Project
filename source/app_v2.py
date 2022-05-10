@@ -1,3 +1,6 @@
+#region Import Blocks
+import products
+#endregion
 #region Function Blocks
 def program_start():
     menu = show_main_menu()
@@ -65,7 +68,7 @@ def show_type_main_menu(type):
     nav = input("Option: ")
     if nav == "1":
         if type == "product":
-            print_data_list(products_list)
+            print_data_list(products.products_list)
         elif type == "courier":
             print_data_list(couriers_list)
         input("Press Enter to Continue")
@@ -83,29 +86,43 @@ def show_type_main_menu(type):
         return f"{type}s main"
 def show_product_add_menu():
     print_title_stars("Add New Product Menu")
-    print("Please input name of product you wish to add")
-    name = input("Name: ").title()
-    print("Please input price of {} (Without £ symbol)".format(name))
-    price = input("Price: ")
-    # Run function here which takes name and price adds them to dictionary and appends them to a list of dictionaries
-    print(f"{name} successfully added. Returning to Products Menu")
+    print("Leave field blank or type 0 to exit")
+    print("Please enter name of new product to add")
+    cancel = products.add_new_product()
+    if cancel == "cancel":
+        print("Cancelling input. Returning to products menu")
+    else:
+        print("Product successfully added. Returning to products Menu")
     return "products main"
 def show_product_del_menu():
     print_title_stars("Delete a Product")
-    print_data_list(products_list)
+    print_data_list(products.products_list)
     print("Type index of product you wish to delete. 0 will exit")
-    index = input("Option: ")
-    #insert function which will remove an item from a dictionary
-    print("Product removed successfully. Returning to products menu")
+    delete = products.delete_product()
+    if delete == "exit":
+        print("Cancelling delete. Returning to products menu")
+    elif delete == "error":
+        print("Invalid Command. Returning to Products Menu")
+    elif delete == "success":
+        print("Product removed successfully. Returning to products menu")
+    elif delete == "none":
+        print("Index not found. Returning to products menu")
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
     print_data_list(products_list)
     print("Type index of product you wish to change. 0 will exit")
     index = input("Option: ")
-    #insert function which will go through the key and value pair of selected index and update it accordingly
-    print("Product Updated. Returning to products menu")
-    return "products main"
+    if index == "0":
+        print("Cancelling, Returning to products menu")
+        return "products main"
+    elif index > "0" and index < len(products_list):
+        products_list[int(index) - 1] = {"name" : update_product_name(name)}
+        print("Product Updated. Returning to products menu")
+        return "products main"
+    else:
+        print("Invalid Command, Returning to products menu")
+        return "products main"
 def show_courier_add_menu():
     print_title_stars("Add new courier menu")
     print("Please input name of courier you would like to add. type 0 to exit")
@@ -210,7 +227,7 @@ def print_data_list(list):
         print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
 #endregion
 #region Variable Block
-products_list = [{"name" : "Cheese", "price" : "0.50" }, {"name" : "Pickle", "price" : "1.00" }]
+products_list = products.products_list
 couriers_list = [{"name" : "Joe Bloggs", "number" : "0754561023"}, {"name" : "Jane Doe", "number" : "042316578"}]
 orders_list = [{}]
 #endregion
