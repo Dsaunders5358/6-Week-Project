@@ -1,5 +1,6 @@
 #region Import Blocks
 import products
+import couriers
 #endregion
 #region Function Blocks
 def program_start():
@@ -32,6 +33,9 @@ def show_main_menu():  # First menu user will see
         return "orders main"
     elif nav == "0":
         return "exit"
+    else:
+        print("Command not recognised. Returning to menu")
+        return "main menu"
 def move_to_menu(menu):  # For each string returned, move to a differet menu
     if menu == "main menu":
         return show_main_menu()
@@ -70,7 +74,7 @@ def show_type_main_menu(type):
         if type == "product":
             print_data_list(products.products_list)
         elif type == "courier":
-            print_data_list(couriers_list)
+            print_data_list(couriers.couriers_list)
         input("Press Enter to Continue")
         return f"{type}s main"
     elif nav == "2":
@@ -110,19 +114,15 @@ def show_product_del_menu():
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
-    print_data_list(products_list)
+    print_data_list(products.products_list)
     print("Type index of product you wish to change. 0 will exit")
-    index = input("Option: ")
-    if index == "0":
-        print("Cancelling, Returning to products menu")
-        return "products main"
-    elif index > "0" and index < len(products_list):
-        products_list[int(index) - 1] = {"name" : update_product_name(name)}
-        print("Product Updated. Returning to products menu")
-        return "products main"
-    else:
-        print("Invalid Command, Returning to products menu")
-        return "products main"
+    update = input("Option: ")
+    confirm = products.update_product(update)
+    if confirm == "cancel":
+        print("Cancelling Changes. Returning to products menu")
+    elif confirm == " success":
+        print("Change Successful. Returning to products menu")
+    return "products main"
 def show_courier_add_menu():
     print_title_stars("Add new courier menu")
     print("Please input name of courier you would like to add. type 0 to exit")
@@ -228,10 +228,7 @@ def print_data_list(list):
 #endregion
 #region Variable Block
 products_list = products.products_list
-couriers_list = [{"name" : "Joe Bloggs", "number" : "0754561023"}, {"name" : "Jane Doe", "number" : "042316578"}]
+couriers_list = couriers.couriers_list
 orders_list = [{}]
 #endregion
 program_start()
-#test
-#test
-#testing123
