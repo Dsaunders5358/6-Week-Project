@@ -1,9 +1,10 @@
 #region import Block
 import data
+import csv
 #endregion
 #region Function_Block
-def print_stars(): # Formatting Line Break
-    print("***********************************")
+def print_stars(length): # Formatting Line Break
+    print("")
 def get_main_menu(): # First screen user will see when terminal is accessed.
     print_stars()
     print("Main Menu")
@@ -83,7 +84,6 @@ def print_list(type):  #prints list with index added
         list_type = order_list
     if len(list_type) > 0:
         for counter, value in enumerate(list_type, 1):
-            counter = str(counter) + ") "
             print(counter, value)
     else:
         print(f"No {type} in database")
@@ -303,3 +303,6 @@ except:
     data.save_data(product_list, "product_list.txt")
     data.save_data(courier_list, "courier_list.txt")
     print("An error has occured. Exiting Program")
+
+def show_main_menu():
+    print("Main Menu")
