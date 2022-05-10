@@ -9,7 +9,13 @@ def add_new_product():
     products_list.append(new_product)
 def delete_product():
     index = input("Index: ")
-    if int(index) - 1 >= 0 and int(index) - 1 < len(products_list):
-        products_list.pop(int(index) - 1)
-    elif index == "0":
-        return "exit"
+    try:
+        if int(index) - 1 >= 0 and int(index) - 1 < len(products_list):
+            products_list.pop(int(index) - 1)
+            return "success"
+        elif index == "0":
+            return "exit"
+        else:
+            return "none"
+    except ValueError:
+        return "error"

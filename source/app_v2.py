@@ -98,11 +98,15 @@ def show_product_del_menu():
     print_title_stars("Delete a Product")
     print_data_list(products.products_list)
     print("Type index of product you wish to delete. 0 will exit")
-    cancel = products.delete_product()
-    if cancel == "exit":
+    delete = products.delete_product()
+    if delete == "exit":
         print("Cancelling delete. Returning to products menu")
-        return "products main"
-    print("Product removed successfully. Returning to products menu")
+    elif delete == "error":
+        print("Invalid Command. Returning to Products Menu")
+    elif delete == "success":
+        print("Product removed successfully. Returning to products menu")
+    elif delete == "none":
+        print("Index not found. Returning to products menu")
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
