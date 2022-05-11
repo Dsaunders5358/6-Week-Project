@@ -1,13 +1,16 @@
 #region Import Blocks
-import products
-import couriers
+import products, couriers, data
 #endregion
 #region Function Blocks
 def program_start():
+    data.load_csv_data("products.csv")
+    data.load_csv_data("couriers.csv")
     menu = show_main_menu()
     while menu != "exit":
         menu = move_to_menu(menu)
     print("Exiting App\nGoodbye")
+    data.save_csv_data(products.products_list, "products.csv")
+    data.save_csv_data(couriers.couriers_list, "couriers.csv")
 def generate_menu_options(*options):
     index = 1
     for option in options:
@@ -124,29 +127,39 @@ def show_product_update_menu():
         print("Change Successful. Returning to products menu")
     return "products main"
 def show_courier_add_menu():
-    print_title_stars("Add new courier menu")
-    print("Please input name of courier you would like to add. type 0 to exit")
-    name = input("Name: ").title()
-    print(f"Please input phone number for {name}")
-    num = input("Number: ")
-    #insert function here for adding name and number to a courier and adding to list of courier dictionaries
-    print(f"{name} added to database. Returning to courier menu")
+    print_title_stars("Add New Courier Menu")
+    print("Leave field blank or type 0 to exit")
+    print("Please enter name of new courier to add")
+    cancel = couriers.add_new_courier()
+    if cancel == "cancel":
+        print("Cancelling input. Returning to courier menu")
+    else:
+        print("Courier successfully added. Returning to couriers Menu")
     return "couriers main"
 def show_courier_del_menu():
-    print_title_stars("Delete a courier")
-    print_data_list(couriers_list)
+    print_title_stars("Delete a Courier")
+    print_data_list(couriers.couriers_list)
     print("Type index of courier you wish to delete. 0 will exit")
-    index = input("Index: ")
-    # Insert function here which will remove courier from list of dictionaries
-    print("Courier deleted successfully. Returning to courier menu.")
+    delete = couriers.delete_courier()
+    if delete == "exit":
+        print("Cancelling delete. Returning to couriers menu")
+    elif delete == "error":
+        print("Invalid Command. Returning to couriers Menu")
+    elif delete == "success":
+        print("Courier removed successfully. Returning to couriers menu")
+    elif delete == "none":
+        print("Index not found. Returning to couriers menu")
     return "couriers main"
 def show_courier_update_menu():
-    print_title_stars("Update a Courier")
-    print_data_list(couriers_list)
-    print("Type index of courier you wish to change. 0 to exit")
-    index = input("Option: ")
-    #insert function which will go through the key and value pair of selected index and update it accordingly
-    print("Courier Updated. Returning to courier menu")
+    print_title_stars("Update a courier")
+    print_data_list(couriers.couriers_list)
+    print("Type index of courier you wish to change. 0 will exit")
+    update = input("Option: ")
+    confirm = couriers.update_courier(update)
+    if confirm == "cancel":
+        print("Cancelling Changes. Returning to couriers menu")
+    elif confirm == " success":
+        print("Change Successful. Returning to couriers menu")
     return "couriers main"
 def show_orders_main_menu():
     print_title_stars("Orders Main Menu")

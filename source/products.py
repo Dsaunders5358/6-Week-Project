@@ -1,8 +1,7 @@
-products_list = [{"name" : "Cheese", "price" : "0.50" }, {"name" : "Pickle", "price" : "1.00" }]
 def add_new_product():
     name = input("Name: ").title()
     if name == "0" or len(name) <= 0: return "cancel"
-    print("Please enter price of {name}")
+    print(f"Please enter price of {name}")
     price = input("Price: £")
     if price == "0" or len(price) <= 0: return "cancel"
     new_product = {"name" : name, "price" : price}
@@ -29,9 +28,10 @@ def update_product(index):
         return "cancel"
     else:
         products_list[int(index) - 1]["name"] = input_name
-    input_price = input("Change {} to: ".format(products_list[int(index) - 1]["price"]))
+    input_price = input("Change £{} to: £".format(products_list[int(index) - 1]["price"]))
     if len(input_price) <= 0:
             print("No Change")
     else:
         products_list[int(index) - 1]["price"] = input_price
     return "success"
+products_list = []

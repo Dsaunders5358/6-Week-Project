@@ -1,13 +1,27 @@
-def save_data(list, file_name):
-    with open(file_name, "w") as data:
-        for items in list:
-            data.write(items + '\n')
-def load_data(list):
-    type = list + "_list.txt"
-    with open(type, "r") as data:
-        load_list = []
-        data = data.read()
-        data = data.splitlines()
-        for items in data:
-            load_list.append(items)
-    return load_list
+import csv, products, couriers
+def save_csv_data(list, file_name):
+    dict_data = f"source/data/{file_name}"
+    with open(dict_data, mode = "w") as data:
+        if file_name == "couriers.csv":
+            key_headers = ["name", "number"]
+        elif file_name == "products.csv":
+            key_headers = ["name", "price"]
+        elif file_name == "orders.csv":
+            key_headers = ["customer_name", "customer_address", "customer phone", "courier", "status", "items"]
+        writer = csv.DictWriter(data, fieldnames = key_headers)
+        writer.writeheader()
+        for num in range(len(list)):
+            writer.writerow(list[num])
+def load_csv_data(file_name):
+    data_path = f"source/data/{file_name}"
+    with open(data_path, "r") as data:
+        list = csv.DictReader(data)
+        if file_name == "products.csv":
+            for row in list:
+                products.products_list.append(row)
+        elif file_name == "couriers.csv":
+            for row in list:
+                couriers.couriers_list.append(row)
+        elif file_name == "orders.csv":
+            for row in list:
+                orders.orders_list.append(row)
