@@ -5,12 +5,14 @@ import products, couriers, orders, data
 def program_start(): #Program run loop. Saves and Loads data
     data.load_csv_data("products.csv")
     data.load_csv_data("couriers.csv")
+    data.load_csv_data("orders.csv")
     menu = show_main_menu()
     while menu != "exit":
         menu = move_to_menu(menu)
     print("Exiting App\nGoodbye")
     data.save_csv_data(products.products_list, "products.csv")
     data.save_csv_data(couriers.couriers_list, "couriers.csv")
+    data.save_csv_data(orders.orders_list, "orders.csv")
 def generate_menu_options(*options):
     index = 1
     for option in options:
@@ -128,8 +130,6 @@ def show_product_update_menu():
     return "products main"
 def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
-    print("Leave field blank or type 0 to exit")
-    print("Please enter name of new courier to add")
     cancel = couriers.add_new_courier()
     if cancel == "cancel":
         print("Cancelling input. Returning to courier menu")
@@ -190,7 +190,7 @@ def show_orders_add_menu():
         print("Order Cancelled. Returning to orders menu")
         return "orders main"
     print (f"Order has been added. Returning to orders menu")
-    return ("orders main")
+    return "orders main"
 def show_orders_status_menu():
     print_title_stars("Update Order Status")
     data.print_data_list(orders.orders_list)

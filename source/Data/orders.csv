@@ -1,0 +1,2 @@
+customer_name,customer_address,customer phone,courier,status,items
+Don,158 Nunts Lane,07527241452,Jane Doe,preparing,"['Cheese', 'Cheese', 'Cheese']"
