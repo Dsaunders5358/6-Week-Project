@@ -1,8 +1,8 @@
 #region Import Blocks
-import products, couriers, data
+import products, couriers, orders, data
 #endregion
 #region Function Blocks
-def program_start():
+def program_start(): #Program run loop. Saves and Loads data
     data.load_csv_data("products.csv")
     data.load_csv_data("couriers.csv")
     menu = show_main_menu()
@@ -75,9 +75,9 @@ def show_type_main_menu(type):
     nav = input("Option: ")
     if nav == "1":
         if type == "product":
-            print_data_list(products.products_list)
+            data.print_data_list(products.products_list)
         elif type == "courier":
-            print_data_list(couriers.couriers_list)
+            data.print_data_list(couriers.couriers_list)
         input("Press Enter to Continue")
         return f"{type}s main"
     elif nav == "2":
@@ -103,7 +103,7 @@ def show_product_add_menu():
     return "products main"
 def show_product_del_menu():
     print_title_stars("Delete a Product")
-    print_data_list(products.products_list)
+    data.print_data_list(products.products_list)
     print("Type index of product you wish to delete. 0 will exit")
     delete = products.delete_product()
     if delete == "exit":
@@ -117,7 +117,7 @@ def show_product_del_menu():
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
-    print_data_list(products.products_list)
+    data.print_data_list(products.products_list)
     print("Type index of product you wish to change. 0 will exit")
     update = input("Option: ")
     confirm = products.update_product(update)
@@ -138,7 +138,7 @@ def show_courier_add_menu():
     return "couriers main"
 def show_courier_del_menu():
     print_title_stars("Delete a Courier")
-    print_data_list(couriers.couriers_list)
+    data.print_data_list(couriers.couriers_list)
     print("Type index of courier you wish to delete. 0 will exit")
     delete = couriers.delete_courier()
     if delete == "exit":
@@ -152,7 +152,7 @@ def show_courier_del_menu():
     return "couriers main"
 def show_courier_update_menu():
     print_title_stars("Update a courier")
-    print_data_list(couriers.couriers_list)
+    data.print_data_list(couriers.couriers_list)
     print("Type index of courier you wish to change. 0 will exit")
     update = input("Option: ")
     confirm = couriers.update_courier(update)
@@ -167,7 +167,9 @@ def show_orders_main_menu():
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
-        print_data_list(orders_list)
+        data.print_data_list(orders.orders_list)
+        input("Press enter to continue")
+        return "orders main"
     elif nav == "2":
         return "orders add"
     elif nav == "3":
@@ -183,28 +185,15 @@ def show_orders_main_menu():
         return "orders main"
 def show_orders_add_menu():
     print_title_stars("Add New Order Menu")
-    print("Entering details for a new order. Type 0 in any field to cancel and exit to main orders menu")
-    print("Please enter customers name")
-    name = input("Name: ")
-    if name =="0":
-        print("Cancelling order. returning to orders menu")
+    status = orders.add_order_input()
+    if status == "cancel":
+        print("Order Cancelled. Returning to orders menu")
         return "orders main"
-    print("Please enter customers address")
-    address = input("Address: ")
-    if address =="0":
-        print("Cancelling order. returning to orders menu")
-        return "orders main"
-    print("Please enter customer's phone number")
-    number = input("Number: ")
-    if number =="0":
-        print("Cancelling order. returning to orders menu")
-        return "orders main"
-    #enter function here which takes the name address and number and add them to dictionary while asking user to input products they want to add to order
-    print (f"Order for customer {name} has been added. Returning to orders menu")
+    print (f"Order has been added. Returning to orders menu")
     return ("orders main")
 def show_orders_status_menu():
     print_title_stars("Update Order Status")
-    print_data_list(orders_list)
+    data.print_data_list(orders.orders_list)
     print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
     index = input("Order: ")
     if index == "0":
@@ -215,7 +204,7 @@ def show_orders_status_menu():
     return "orders main" 
 def show_orders_update_menu():
     print_title_stars("Updating Order Details")
-    print_data_list(orders_list)
+    data.print_data_list(orders.orders_list)
     print("Which order would you like to update the details of. Type 0 to exit")
     index = input("Order: ")
     if index =="0":
@@ -226,7 +215,7 @@ def show_orders_update_menu():
     return "orders main"
 def show_orders_del_courier_menu():
     print_title_stars("Delete Courier from Order")
-    print_data_list(orders_list)
+    data.print_data_list(orders.orders_list)
     print("Type index of order you would like to remove courier from. Type 0 to exit")
     index = input("Order: ")
     if index == "0":
@@ -235,17 +224,7 @@ def show_orders_del_courier_menu():
     #run function to remove courier from index
     print("Courier successfully removed from order")
     return "orders main"
-def print_data_list(list):
-    for counter, item in enumerate(list, 1):
-        print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
 #endregion
 #region Variable Block
-products_list = products.products_list
-couriers_list = couriers.couriers_list
-orders_list = [{}]
 #endregion
 program_start()
-
-#test
-#test
-#test

@@ -1,4 +1,4 @@
-import products, couriers, orders
+import products, couriers
 from csv import DictReader, DictWriter
 def save_csv_data(list, file_name):
     dict_data = f"source/data/{file_name}"
@@ -26,3 +26,6 @@ def load_csv_data(file_name):
         elif file_name == "orders.csv":
             for row in list:
                 orders.orders_list.append(row)
+def print_data_list(list):
+    for counter, item in enumerate(list, 1):
+        print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
