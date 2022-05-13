@@ -1,2 +1,4 @@
-customer_name,customer_address,customer phone,courier,status,items
-Don,158 Nunts Lane,07527241452,Jane Doe,preparing,"['Cheese', 'Cheese', 'Cheese']"
+customer_name,customer_address,customer_phone,courier,status,items
+Ireland Wolfe,22 Rock Street,0453254276,Bailey Jackson,preparing,"['Cheese Toastie', 'Full English Breakfast']"
+Jae Suggitt,64 Zoo Lane,034526,Darien Fuchs,preparing,"['Shepherds Pie', 'Bacon Sandwhich', 'Cereal', 'Fried Bread']"
+Rollo Brandon,22 Park Street,032452,Maeghan Lynwood,preparing,"['Omelette', 'Omelette']"

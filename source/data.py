@@ -8,7 +8,7 @@ def save_csv_data(list, file_name):
         elif file_name == "products.csv":
             key_headers = ["name", "price"]
         elif file_name == "orders.csv":
-            key_headers = ["customer_name", "customer_address", "customer phone", "courier", "status", "items"]
+            key_headers = ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
         writer = DictWriter(data, fieldnames = key_headers)
         writer.writeheader()
         for num in range(len(list)):

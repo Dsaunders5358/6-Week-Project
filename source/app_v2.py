@@ -194,34 +194,28 @@ def show_orders_add_menu():
 def show_orders_status_menu():
     print_title_stars("Update Order Status")
     data.print_data_list(orders.orders_list)
-    print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
-    index = input("Order: ")
-    if index == "0":
+    status = orders.update_order_status()
+    if status == "cancel":
         print("Cancelling change, returning to orders menu")
         return ("orders main")
-    #insert function which updates the status of order here
     print("order status changed successfully. Returning to orders menu")
     return "orders main" 
 def show_orders_update_menu():
     print_title_stars("Updating Order Details")
     data.print_data_list(orders.orders_list)
-    print("Which order would you like to update the details of. Type 0 to exit")
-    index = input("Order: ")
-    if index =="0":
+    changed = orders.update_order_details()
+    if changed == "cancel":
         print("Cancelling change. Returning to orders menu")
         return "orders main"
-    #takes to function which changes the details of the order
     print("Order details changed successfully")
     return "orders main"
 def show_orders_del_courier_menu():
     print_title_stars("Delete Courier from Order")
     data.print_data_list(orders.orders_list)
-    print("Type index of order you would like to remove courier from. Type 0 to exit")
-    index = input("Order: ")
-    if index == "0":
-        print("Cancelling action. Returning to orders menu")
+    removed = orders.remove_courier()
+    if removed == "cancel":
+        print("Removal Cancelled. Returning to orders menu")
         return "orders main"
-    #run function to remove courier from index
     print("Courier successfully removed from order")
     return "orders main"
 #endregion
