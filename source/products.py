@@ -1,3 +1,4 @@
+#region Function Block
 def add_new_product():
     name = input("Name: ").title()
     if name == "0" or len(name) <= 0: return "cancel"
@@ -34,4 +35,7 @@ def update_product(index):
     else:
         products_list[int(index) - 1]["price"] = input_price
     return "success"
+#endregion
+#region Variable Block
 products_list = []
+#endregion

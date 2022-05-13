@@ -1,4 +1,5 @@
 customer_name,customer_address,customer_phone,courier,status,items
 Ireland Wolfe,22 Rock Street,0453254276,Bailey Jackson,preparing,"['Cheese Toastie', 'Full English Breakfast']"
 Jae Suggitt,64 Zoo Lane,034526,Darien Fuchs,preparing,"['Shepherds Pie', 'Bacon Sandwhich', 'Cereal', 'Fried Bread']"
-Rollo Brandon,22 Park Street,032452,Maeghan Lynwood,preparing,"['Omelette', 'Omelette']"
+Rollo Brandon,342 Park Street,032452,N/A,preparing,"['Omelette', 'Omelette']"
+Jack Warner,89 Avenue Street,0242345256,Matt Blue,preparing,"['Bacon Sandwhich', 'Fried Bread', 'Sausage And Bacon Baguette']"

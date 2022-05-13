@@ -1,0 +1,3 @@
+'str' object has no attribute 'values'
+'customer_phone '
+'customer_phone '

@@ -1,4 +1,5 @@
 #region Import Blocks
+from logging import exception
 import products, couriers, orders, data
 #endregion
 #region Function Blocks
@@ -221,4 +222,14 @@ def show_orders_del_courier_menu():
 #endregion
 #region Variable Block
 #endregion
-program_start()
+try:
+    program_start()
+# except KeyboardInterrupt as log:
+#     print("Debug Finished. Exiting") 
+except Exception as log:
+    data.save_csv_data(products.products_list, "products.csv")
+    data.save_csv_data(couriers.couriers_list, "couriers.csv")
+    data.save_csv_data(orders.orders_list, "orders.csv")
+    print("Unkown Error has Occured. Saving data and exiting application")
+    with open("log.txt", "a+") as error_log:
+        error_log.write(f"{log}\n")
