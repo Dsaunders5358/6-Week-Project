@@ -1,3 +1,4 @@
+#region Function Block
 def add_new_courier(): # Format courier and add to list
     name = input("Name: ").title()
     if name == "0" or len(name) <= 0: return "cancel"
@@ -34,4 +35,7 @@ def update_courier(index):
     else:
         couriers_list[int(index) - 1]["number"] = input_num
     return "success"
+#endregion
+#region Variable Block
 couriers_list = []
+#endregion
