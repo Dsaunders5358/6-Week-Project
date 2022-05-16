@@ -1,6 +1,5 @@
 #region Import Blocks
-from logging import exception
-
+import logging
 import products, couriers, orders, data
 #endregion
 #region Function Blocks
@@ -18,9 +17,9 @@ def program_start(): #Program run loop. Saves and Loads data
 def generate_menu_options(*options):
     index = 1
     for option in options:
-        print(f"{index}) {option}")
+        print(f"{index} | {option}")
         index += 1
-    print("0) Exit")
+    print("0 | Exit")
 def print_title_stars(title):  #Formatting stars via title
     stars = ""
     for char in range(0, len(title)):
@@ -30,7 +29,7 @@ def print_title_stars(title):  #Formatting stars via title
     print(stars)
 def show_main_menu():  # First menu user will see
     print_title_stars("Main Menu")
-    print("Please Choose a Menu Option.\n1) Products\n2) Couriers\n3) Orders\n0) Exit Program")
+    print("Please Choose a Menu Option.\n1 | Products\n2 | Couriers\n3 | Orders\n0 | Exit Program")
     nav = input("Option: ")
     if nav == "1":
         return "products main"
@@ -127,8 +126,10 @@ def show_product_update_menu():
     confirm = products.update_product(update)
     if confirm == "cancel":
         print("Cancelling Changes. Returning to products menu")
-    elif confirm == " success":
+    elif confirm == "success":
         print("Change Successful. Returning to products menu")
+    elif confirm == "error":
+        print("Invalid index input. Returning to products menu")
     return "products main"
 def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
@@ -160,8 +161,10 @@ def show_courier_update_menu():
     confirm = couriers.update_courier(update)
     if confirm == "cancel":
         print("Cancelling Changes. Returning to couriers menu")
-    elif confirm == " success":
+    elif confirm == "success":
         print("Change Successful. Returning to couriers menu")
+    elif confirm == "error":
+        print("Invalid index entered. Returning to couriers menu")
     return "couriers main"
 def show_orders_main_menu():
     print_title_stars("Orders Main Menu")
@@ -169,7 +172,17 @@ def show_orders_main_menu():
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
-        data.print_data_list(orders.orders_list)
+        generate_menu_options("Sort by ID", "Sort by Courier", "Sort by Status")
+        sort = input("Sort Method: ")
+        if sort == "1" : data.print_data_list(orders.orders_list)
+        elif sort == "2": data.print_data_list(sorted(orders.orders_list, key = lambda x: x["courier"]))
+        elif sort == "3": data.print_data_list(sorted(orders.orders_list, key = lambda x: x["status"]))
+        elif sort == "0": 
+            print("Cancelling Sort. Returning to main menu")
+            return "orders main"
+        else:
+            print("Invalid Option. Returning to orders menu")     
+            return "orders main"   
         input("Press enter to continue")
         return "orders main"
     elif nav == "2":
@@ -191,6 +204,9 @@ def show_orders_add_menu():
     if status == "cancel":
         print("Order Cancelled. Returning to orders menu")
         return "orders main"
+    elif status == "error":
+        print("Invalid Command Entry. Returning to orders menu")
+        return "orders main"
     print (f"Order has been added. Returning to orders menu")
     return "orders main"
 def show_orders_status_menu():
@@ -199,7 +215,10 @@ def show_orders_status_menu():
     status = orders.update_order_status()
     if status == "cancel":
         print("Cancelling change, returning to orders menu")
-        return ("orders main")
+        return "orders main"
+    elif status == "error":
+        print("Index Error, Returning to orders menu")
+        return "orders main"
     print("order status changed successfully. Returning to orders menu")
     return "orders main" 
 def show_orders_update_menu():
@@ -208,6 +227,9 @@ def show_orders_update_menu():
     changed = orders.update_order_details()
     if changed == "cancel":
         print("Cancelling change. Returning to orders menu")
+        return "orders main"
+    elif changed == "error":
+        print("Invalid command entry. Returning to orders menu")
         return "orders main"
     print("Order details changed successfully")
     return "orders main"
@@ -218,19 +240,23 @@ def show_orders_del_courier_menu():
     if removed == "cancel":
         print("Removal Cancelled. Returning to orders menu")
         return "orders main"
+    elif removed == "error":
+        print("Invalid command entry. Returning to orders menu")
+        return "orders main"
     print("Courier successfully removed from order")
     return "orders main"
 #endregion
 #region Variable Block
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 #endregion
 try:
     program_start()
 except KeyboardInterrupt:
     print("Debug Finished. Exiting") 
 except Exception as log:
+    logger.exception(log)
     data.save_csv_data(products.products_list, "products.csv")
     data.save_csv_data(couriers.couriers_list, "couriers.csv")
     data.save_csv_data(orders.orders_list, "orders.csv")
     print("Unkown Error has Occured. Saving data and exiting application")
-    with open("log.txt", "a+") as error_log:
-        error_log.write(f"{log}\n")

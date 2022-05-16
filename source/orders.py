@@ -7,8 +7,13 @@ def add_order_input():
     name, address, number = get_customer_name()
     if name =="cancel" or address == "cancel" or number == "cancel": return "cancel"
     customer_products = get_order_products()
+    if customer_products == "error":
+        return "error"
     courier_name = get_order_couriers()
+    if courier_name == "error":
+        return "error"
     order_dict = {
+        "id" : str(len(orders_list) + 1), 
         "customer_name" : name,
         "customer_address" : address,
         "customer_phone" : number,
@@ -36,11 +41,15 @@ def get_order_products():
     customer_products = []
     while repeat != "n":
         for counter, item in enumerate(products.products_list, 1): # Prints all product dicts in numbered list with formatting <1st field> | <2nd field> 
-            print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
+            print(" | ".join(str(value)for value in item.values()))
         print("Which product index would you like to add to order?")
         input_index = input("Index: ")
-        if input_index == "cancel": return "cancel"
+        while len(input_index) == 0:
+            print("No input, please enter index")
+            input_index = input("Index: ")
         new_index = check_if_range(input_index, products.products_list)
+        if new_index == "error": return "error"
+        elif input_index == "cancel": return "cancel"
         customer_products.append(products.products_list[new_index]["name"])
         print("Do you want to add another product to order?. Type N to finish adding items")
         repeat = input("Add more products?: ")
@@ -50,32 +59,72 @@ def get_order_couriers():
         print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
     print("Please type number of courier you would like to add")
     input_index = input("Index: ")
+    while len(input_index) == 0:
+        print("No input, please enter index")
+        input_index = input("Index: ")
     new_index = check_if_range(input_index, couriers.couriers_list)
+    if new_index == "error": return "error"
+    elif new_index == "cancel": return "cancel"
     return couriers.couriers_list[new_index]["name"] 
 def update_order_status():
     print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
     index = input("Order: ")
+    while len(index) == 0:
+        print("No input, please enter index")
+        index = input("Index: ")
     new_index = check_if_range(index, orders_list)
-    print("What would you like to change status to?")
-    new_status = input("Status: ")
+    if new_index == "cancel":
+        return "cancel"
+    new_status = get_new_status()
+    if new_status == "cancel":
+        return "cancel"
+    elif new_status == "error":
+        return "error"
     orders_list[new_index]["status"] = new_status
 def update_order_details():
     print("Type index of order you would to update the details of. Type 0 to exit to orders menu")
     input_index = input("Order: ")
+    while len(input_index) == 0:
+        print("No input, please enter index")
+        input_index = input("Index: ")
     new_index = check_if_range(input_index, orders_list)
+    if new_index == "cancel": return "cancel"
+    elif new_index == "error": return "error"
     headers = ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
     for field in headers:
         print(orders_list[new_index][field])
         if field == "items":
-            print("Would you like to change the products for order. Y or N")
-            confirm = input("Y or N")
-            while confirm.lower() != "y" and confirm.lower() != "n":
-                print("Invalid response. Please type Y or N")
-                confirm = input("Y or N")
-            if confirm.lower() == "y":
+            print("Type Y to show products list to add products. Anything else will skip")
+            confirm = input("Products?: ")
+            if confirm.lower() != "y":
+                continue
+            else:
                 new_products = get_order_products()
+                if new_products == "error": return "error"
+                elif new_products == "cancel": return "cancel"
                 orders_list[new_index][field] = new_products
-            continue    
+                continue
+        elif field == "status":
+            print("Type Y to show status list to change status. Anything else will skip")
+            confirm = input("Status?: ")
+            if confirm.lower() != "y":
+                continue
+            else:
+                new_status = get_new_status()
+                if new_status == "error": return "error"
+                elif new_status == "cancel": return "cancel"
+                orders_list[new_index][field] = status_list[new_status]
+                continue
+        elif field == "courier":
+            print("Type Y to show courier list to add courier. Anything else will skip")
+            confirm = input("Couriers?: ")
+            if confirm.lower() != "y":
+                continue
+            else:
+                new_courier = get_order_couriers()
+                if new_courier == "error": return "error"
+                elif new_courier == "cancel": return "cancel"
+                orders_list[new_index][field] = new_courier
         new_field = input(f"Change {field}: ")
         if new_field == "0":
             return "cancel"
@@ -88,26 +137,39 @@ def remove_courier():
     new_index = check_if_range(index_input, orders_list)
     if new_index == "cancel":
         return "cancel"
+    elif new_index == "error":
+        return "error"
     orders_list[new_index]["courier"] = "N/A"
     return "success"
-def check_if_range(index, list): # Checks if input is digit, will run untill input is digit
-    list_index = -1
-    if index == "0":
+def check_if_range(index, list): # Checks if input is digit
+    if index.isdigit() == True:
+        if int(index) - 1 < 0 or int(index) - 1 > len(list):
+            return "error"
+        elif index == "0":
+            return "cancel"
+        else:
+            return int(index) - 1
+    else:
+        return "error"
+def get_new_status():
+    for count, status in enumerate(status_list, 1):
+        print(f"{count} | {status}")
+    print("What index would you like to change status to?")
+    index = input("Status: ")
+    while len(index) == 0:
+            print("No input, please enter index")
+            index = input("Index: ")
+    new_status = check_if_range(index, status_list)
+    if new_status == "cancel":
         return "cancel"
-    while index.isdigit() == False or (list_index < 0 and list_index > len(list)):
-        print("Im here")
-        index = input("Index: ")
-        if index.isdigit() == False:
-            while index.isdigit() == False:
-                index = input("Index: ")
-                print("Invalid input. Please input valid number to continue")
-        list_index = int(index) - 1
-        if list_index < 0 or list_index > len(list):
-            print("Index not found. Please input valid number")
-            continue
-    list_index = int(index) - 1
-    return list_index
+    elif new_status == "error":
+        return "error"
+    return status_list[new_status]
+    
 #endregion
 #region Variable Block        
 orders_list = []
+status_list = ["Preparing", "Out for delivery", "Delivered", "Cancelled"]
+test_list = [{"status" : "Preparing"}, {"status" : "Out for delivery"}, {"status" : "Delivered"}, {"status" : "Cancelled"}]
 #endregion
+print(sorted(test_list, key=lambda x: x["status"]))

@@ -4,11 +4,11 @@ def save_csv_data(list, file_name):
     dict_data = f"source/data/{file_name}"
     with open(dict_data, mode = "w") as data:
         if file_name == "couriers.csv":
-            key_headers = ["name", "number"]
+            key_headers = ["id", "name", "number"]
         elif file_name == "products.csv":
-            key_headers = ["name", "price"]
+            key_headers = ["id", "name", "price"]
         elif file_name == "orders.csv":
-            key_headers = ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
+            key_headers = ["id","customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
         writer = DictWriter(data, fieldnames = key_headers)
         writer.writeheader()
         for num in range(len(list)):
@@ -27,5 +27,8 @@ def load_csv_data(file_name):
             for row in list:
                 orders.orders_list.append(row)
 def print_data_list(list):
-    for counter, item in enumerate(list, 1):
-        print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
+    for count, item in enumerate(list):
+        if int(item["id"]) < 10:
+            print("  | ".join(str(value)for value in item.values()))
+        else:
+            print(" | ".join(str(value)for value in item.values()))
