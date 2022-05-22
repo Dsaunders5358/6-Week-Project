@@ -1,6 +1,4 @@
 import source.data_handlers.sql_data as sql_data
-import pymysql
-import os
 from dotenv import load_dotenv
 #region Function Block
 def add_new_product():
@@ -14,18 +12,18 @@ def add_new_product():
         return "error"
     if price == "0" or len(price) <= 0: return "cancel"
     sql_data.add_product_data(name, price)
-def delete_product(list):
+def delete_product(data_list):
     index = input("Index: ")
-    new_index = check_if_range(index, list)
-    if new_index >= 0 and new_index < len(list):
+    new_index = check_if_range(index, data_list)
+    if new_index >= 0 and new_index < len(data_list):
         sql_data.remove_product_data(new_index)
         return "success"
     elif index == "0":
         return "exit"
     else:
         return "none"
-def update_product(index, list):
-    new_index = check_if_range(index, list)
+def update_product(index, data_list):
+    new_index = check_if_range(index, data_list)
     if new_index == "cancel": return "cancel"
     elif new_index == "error": return "error"
     print("Please input the change for name and price")
@@ -40,9 +38,9 @@ def update_product(index, list):
             print("No Change")
     sql_data.update_product_data(new_index, input_name, input_price)
     return "success"
-def check_if_range(index, list): # Checks if input is digit
+def check_if_range(index, data_list): # Checks if input is digit
     if index.isdigit() == True:
-        if int(index) - 1 < 0 or int(index) - 1 > len(list):
+        if int(index) - 1 < 0 or int(index) - 1 > len(data_list):
             return "error"
         elif index == "0":
             return "cancel"
@@ -56,31 +54,4 @@ def isfloat(num):
         return num
     except ValueError:
         return "error"
-def print_product_data():
-    connection = connect_to_database()
-    cursor = connection.cursor()
-    cursor.execute('SELECT * from products')
-    products = cursor.fetchall()
-    for count, row in enumerate(products, 1):
-        if count > 9:
-            print(f"{count} | {row[1]} | £{row[2]}")
-        else:
-            print(f"{count}  | {row[1]} | £{row[2]}")
-    cursor.close()
-    connection.close()
-#endregion
-#region Variable Block
-load_dotenv()
-host = os.environ.get("mysql_host")
-user = os.environ.get("mysql_user")
-password = os.environ.get("mysql_pass")
-database = os.environ.get("mysql_db")
-def connect_to_database():
-    return pymysql.connect(
-        host,
-        user,
-        password,
-        database
-    )
-products_list = []
 #endregion

@@ -7,17 +7,14 @@ import source.data_handlers.csv_data as data
 import source.data_handlers.sql_data as sql_data
 #endregion
 #region Function Blocks
-def program_start(): #Program run loop. Saves and Loads data
-    #data.load_csv_data("products.csv")
-    data.load_csv_data("couriers.csv")
-    data.load_csv_data("orders.csv")
+def program_start(): #Program run loop. Saves data to CSV when done
     menu = show_main_menu()
     while menu != "exit":
         menu = move_to_menu(menu)
     print("Exiting App\nGoodbye")
     sql_data.save_to_csv("products_list.csv")
-    #data.save_csv_data(couriers.couriers_list, "couriers.csv")
-    #data.save_csv_data(orders.orders_list, "orders.csv")
+    sql_data.save_to_csv("couriers_list.csv")
+    sql_data.save_to_csv("orders_list.csv")
 def generate_menu_options(*options):
     index = 1
     for option in options:
@@ -84,9 +81,9 @@ def show_type_main_menu(type):
     nav = input("Option: ")
     if nav == "1":
         if type == "product":
-            products.print_product_data()
+            sql_data.get_products_data()
         elif type == "courier":
-            couriers.print_courier_data()
+            sql_data.get_couriers_data()
         input("Press Enter to Continue")
         return f"{type}s main"
     elif nav == "2":
@@ -114,9 +111,9 @@ def show_product_add_menu():
     return "products main"
 def show_product_del_menu():
     print_title_stars("Delete a Product")
-    list = sql_data.get_products_data()
+    data_list = sql_data.get_products_data()
     print("Type index of product you wish to delete. 0 will exit")
-    delete = products.delete_product(list)
+    delete = products.delete_product(data_list)
     if delete == "exit":
         print("Cancelling delete. Returning to products menu")
     elif delete == "error":
@@ -141,6 +138,8 @@ def show_product_update_menu():
     return "products main"
 def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
+    print("Leave field blank or type 0 to exit")
+    print("Please enter name of new product to add")
     cancel = couriers.add_new_courier()
     if cancel == "cancel":
         print("Cancelling input. Returning to courier menu")
@@ -151,9 +150,9 @@ def show_courier_add_menu():
     return "couriers main"
 def show_courier_del_menu():
     print_title_stars("Delete a Courier")
-    data.print_data_list(couriers.couriers_list)
+    data_list = sql_data.get_couriers_data()
     print("Type index of courier you wish to delete. 0 will exit")
-    delete = couriers.delete_courier()
+    delete = couriers.delete_courier(data_list)
     if delete == "exit":
         print("Cancelling delete. Returning to couriers menu")
     elif delete == "error":
@@ -165,10 +164,10 @@ def show_courier_del_menu():
     return "couriers main"
 def show_courier_update_menu():
     print_title_stars("Update a courier")
-    data.print_data_list(couriers.couriers_list)
+    get_list = sql_data.get_couriers_data()
     print("Type index of courier you wish to change. 0 will exit")
     update = input("Option: ")
-    confirm = couriers.update_courier(update)
+    confirm = couriers.update_courier(update, get_list)
     if confirm == "cancel":
         print("Cancelling Changes. Returning to couriers menu")
     elif confirm == "success":
@@ -182,17 +181,7 @@ def show_orders_main_menu():
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
-        generate_menu_options("Sort by ID", "Sort by Courier", "Sort by Status")
-        sort = input("Sort Method: ")
-        if sort == "1" : data.print_data_list(orders.orders_list)
-        elif sort == "2": data.print_data_list(sorted(orders.orders_list, key = lambda x: x["courier"]))
-        elif sort == "3": data.print_data_list(sorted(orders.orders_list, key = lambda x: x["status"]))
-        elif sort == "0": 
-            print("Cancelling Sort. Returning to main menu")
-            return "orders main"
-        else:
-            print("Invalid Option. Returning to orders menu")     
-            return "orders main"   
+        sql_data.get_orders_data()
         input("Press enter to continue")
         return "orders main"
     elif nav == "2":
@@ -217,13 +206,12 @@ def show_orders_add_menu():
         print("Order Cancelled. Returning to orders menu")
         return "orders main"
     elif status == "error":
-        print("Invalid Command Entry. Returning to orders menu")
+        print("Invalid Command Entry or blank field. Returning to orders menu")
         return "orders main"
     print (f"Order has been added. Returning to orders menu")
     return "orders main"
 def show_orders_status_menu():
     print_title_stars("Update Order Status")
-    data.print_data_list(orders.orders_list)
     status = orders.update_order_status()
     if status == "cancel":
         print("Cancelling change, returning to orders menu")
@@ -235,7 +223,6 @@ def show_orders_status_menu():
     return "orders main" 
 def show_orders_update_menu():
     print_title_stars("Updating Order Details")
-    data.print_data_list(orders.orders_list)
     changed = orders.update_order_details()
     if changed == "cancel":
         print("Cancelling change. Returning to orders menu")
@@ -280,7 +267,7 @@ except KeyboardInterrupt:
     print("Debug Finished. Exiting") 
 except Exception as log:
     logger.exception(log)
-    data.save_csv_data(products.products_list, "products.csv")
-    data.save_csv_data(couriers.couriers_list, "couriers.csv")
-    data.save_csv_data(orders.orders_list, "orders.csv")
+    sql_data.save_to_csv("products_list.csv")
+    sql_data.save_to_csv("couriers_list.csv")
+    #data.save_csv_data(orders.orders_list, "orders.csv")
     print("Unkown Error has Occured. Saving data and exiting application")

@@ -1,0 +1,6 @@
+order_id,customer_name,customer_address,customer_phone,courier_id,status,product_id
+1,Ireland Wolfe,22 Rock Street,0453254276,5,preparing,4
+2,Jae Suggitt,64 Zoo Lane,034526,1,preparing,9
+3,Rollo Brandon,342 Park Street,032452,2,Preparing,8
+4,Jack Warner,89 Avenue Street,0242345256,4,Cancelled,9
+5,test,test,test,2,Delivered,2

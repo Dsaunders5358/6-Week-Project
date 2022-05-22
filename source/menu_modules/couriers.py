@@ -1,53 +1,41 @@
-import pymysql
-import os
-from dotenv import load_dotenv
+import source.data_handlers.sql_data as sql_data
 #region Function Block
-def add_new_courier(): # Format courier and add to list
+def add_new_courier():
     name = input("Name: ").title()
     if name == "0" or len(name) <= 0: return "cancel"
-    print(f"Please enter phone number of {name}")
-    num = input("Number: ")
-    try:
-        int(num)
-    except:
-        return "error"
+    print(f"Please enter number of {name}")
+    num = input("number: ")
     if num == "0" or len(num) <= 0: return "cancel"
-    new_courier = {"id" : str(len(couriers_list) + 1),  "name" : name, "number" : num}
-    couriers_list.append(new_courier)
-def delete_courier(): # Pop courier from list
+    sql_data.add_courier_data(name, num)
+def delete_courier(data_list): # Pop courier from list
     index = input("Index: ")
-    try:
-        if int(index) - 1 >= 0 and int(index) - 1 < len(couriers_list):
-            couriers_list.pop(int(index) - 1)
-            return "success"
-        elif index == "0":
-            return "exit"
-        else:
-            return "none"
-    except ValueError:
-        return "error"
-def update_courier(index):
-    new_index = check_if_range(index, couriers_list)
+    new_index = check_if_range(index, data_list)
+    if new_index >= 0 and new_index < len(data_list):
+        sql_data.remove_courier_data(new_index)
+        return "success"
+    elif index == "0":
+        return "exit"
+    else:
+        return "none"
+def update_courier(index, data_list):
+    new_index = check_if_range(index, data_list)
     if new_index == "cancel": return "cancel"
     elif new_index == "error": return "error"
-    print("Please input to change for name and number")
-    print("Leave Blank leave field as is or type 0 to cancel and return to menu")
-    input_name = input("Change {} to: ".format(couriers_list[new_index]["name"]))
-    if len(input_name) <= 0:
+    print("Please input the change for name and number")
+    print("Leave Blank to leave each option as it is or type 0 to cancel and return to menu")
+    input_name = input("Change name to: ")
+    if len(input_name) < 0:
         print("No Change")
     elif input_name == "0":
         return "cancel"
-    else:
-        couriers_list[new_index]["name"] = input_name
-    input_num = input("Change {} to: ".format(couriers_list[new_index]["number"]))
+    input_num = input("Change number to: ")
     if len(input_num) <= 0:
             print("No Change")
-    else:
-        couriers_list[new_index]["number"] = input_num
+    sql_data.update_courier_data(new_index, input_name, input_num)
     return "success"
-def check_if_range(index, list): # Checks if input is digit
+def check_if_range(index, data_list): # Checks if input is digit
     if index.isdigit() == True:
-        if int(index) - 1 < 0 or int(index) - 1 > len(list):
+        if int(index) - 1 < 0 or int(index) - 1 > len(data_list):
             return "error"
         elif index == "0":
             return "cancel"
@@ -55,23 +43,4 @@ def check_if_range(index, list): # Checks if input is digit
             return int(index) - 1
     else:
         return "error"
-def print_courier_data():
-    cursor = connection.cursor()
-    cursor.execute('SELECT * from couriers')
-    couriers = cursor.fetchall()
-    for count, row in enumerate(couriers, 1):
-        if count > 9:
-            print(f"{count} | {row[1]} | {row[2]}")
-        else:
-            print(f"{count}  | {row[1]} | {row[2]}")
-    cursor.close()
-    connection.close()
-#endregion
-#region Variable Block
-load_dotenv()
-host = os.environ.get("mysql_host")
-user = os.environ.get("mysql_user")
-password = os.environ.get("mysql_pass")
-database = os.environ.get("mysql_db")
-couriers_list = []
 #endregion

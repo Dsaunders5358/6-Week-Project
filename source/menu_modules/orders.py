@@ -1,79 +1,77 @@
 #region Import Block
 import source.menu_modules.products as products
 import source.menu_modules.couriers as couriers
+import source.data_handlers.sql_data as sql_data
 #endregion
 #region Function Block
 def add_order_input():
     print("Entering details for a new order. Type 0 in any field to cancel and exit to main orders menu")
     name, address, number = get_customer_name()
     if name =="cancel" or address == "cancel" or number == "cancel": return "cancel"
-    customer_products = get_order_products()
-    if customer_products == "error":
+    elif name =="error" or address == "error" or number == "error": return "error"
+    product_id = get_order_products()
+    if product_id == "error":
         return "error"
-    courier_name = get_order_couriers()
-    if courier_name == "error":
+    courier_id = get_order_couriers()
+    if courier_id == "error":
         return "error"
-    order_dict = {
-        "id" : str(len(orders_list) + 1), 
-        "customer_name" : name,
-        "customer_address" : address,
-        "customer_phone" : number,
-        "courier" : courier_name,
-        "status" : "preparing", 
-        "items" : customer_products, 
-    }
-    orders_list.append(order_dict)
+    sql_data.add_order_data(name, address, number, courier_id, product_id)
 def get_customer_name():
     print("Please enter customers name")
     name = input("Name: ")
     if name =="0":
         return "cancel", "cancel", "cancel"
+    elif len(name) <= 0:
+        return "error", "error", "error"
     print("Please enter customers address")
     address = input("Address: ")
     if address =="0":
         return "cancel", "cancel", "cancel"
+    elif len(address) <= 0:
+        return "error", "error", "error"
     print("Please enter customer's phone number")
     number = input("Number: ")
     if number =="0":
         return "cancel", "cancel", "cancel"
+    elif len(number) <= 0:
+        return "error", "error", "error"
     return name, address, number
 def get_order_products():
-    repeat = ""
-    customer_products = []
-    while repeat != "n":
-        for counter, item in enumerate(products.products_list, 1): # Prints all product dicts in numbered list with formatting <1st field> | <2nd field> 
-            print(" | ".join(str(value)for value in item.values()))
-        print("Which product index would you like to add to order?")
+    #repeat = ""
+    #customer_products = []
+    #while repeat != "n":
+    data_list = sql_data.get_products_data()
+    print("Which product index would you like to add to order?")
+    input_index = input("Index: ")
+    while len(input_index) == 0:
+        print("No input, please enter index")
         input_index = input("Index: ")
-        while len(input_index) == 0:
-            print("No input, please enter index")
-            input_index = input("Index: ")
-        new_index = check_if_range(input_index, products.products_list)
-        if new_index == "error": return "error"
-        elif input_index == "cancel": return "cancel"
-        customer_products.append(new_index + 1)
-        print("Do you want to add another product to order?. Type N to finish adding items")
-        repeat = input("Add more products?: ")
+    new_index = check_if_range(input_index, data_list)
+    if new_index == "error": return "error"
+    elif input_index == "cancel": return "cancel"
+    customer_products = new_index + 1
+    #print("Do you want to add another product to order?. Type N to finish adding items")
+    #repeat = input("Add more products?: ")
     return customer_products
 def get_order_couriers():
-    for counter, item in enumerate(couriers.couriers_list, 1): # Prints all courier dicts in numbered list with formatting <1st field> | <2nd field> 
-        print("{}) ".format(counter) + " | ".join(str(value)for value in item.values()))
+    data_list = sql_data.get_couriers_data()
     print("Please type number of courier you would like to add")
     input_index = input("Index: ")
     while len(input_index) == 0:
         print("No input, please enter index")
         input_index = input("Index: ")
-    new_index = check_if_range(input_index, couriers.couriers_list)
+    new_index = check_if_range(input_index, data_list)
     if new_index == "error": return "error"
     elif new_index == "cancel": return "cancel"
     return new_index + 1
 def update_order_status():
+    data_list = sql_data.get_orders_data()
     print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
     index = input("Order: ")
     while len(index) == 0:
         print("No input, please enter index")
         index = input("Index: ")
-    new_index = check_if_range(index, orders_list)
+    new_index = check_if_range(index, data_list)
     if new_index == "cancel":
         return "cancel"
     new_status = get_new_status()
@@ -81,57 +79,71 @@ def update_order_status():
         return "cancel"
     elif new_status == "error":
         return "error"
-    orders_list[new_index]["status"] = new_status
+    sql_data.update_order_status(data_list[new_index]["order_id"], new_status)
 def update_order_details():
+    data_list = sql_data.get_orders_data()
     print("Type index of order you would to update the details of. Type 0 to exit to orders menu")
     input_index = input("Order: ")
     while len(input_index) == 0:
         print("No input, please enter index")
         input_index = input("Index: ")
-    new_index = check_if_range(input_index, orders_list)
+    new_index = check_if_range(input_index, data_list)
     if new_index == "cancel": return "cancel"
     elif new_index == "error": return "error"
-    headers = ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
+    headers = ["customer_name", "customer_address", "customer_phone", "courier_id", "items"]
     for field in headers:
-        print(orders_list[new_index][field])
-        if field == "items":
-            print("Type Y to show products list to add products. Anything else will skip")
-            confirm = input("Products?: ")
-            if confirm.lower() != "y":
-                continue
+        if field == "customer_name":
+            print(field + " | " + data_list[new_index][field])
+            print("Type name to change to. Leave blank to not change. 0 to exit and cancel all changes")
+            name_input = input("New Name: ")
+            if name_input == "0":
+                return "cancel"
             else:
-                new_products = get_order_products()
-                if new_products == "error": return "error"
-                elif new_products == "cancel": return "cancel"
-                orders_list[new_index][field] = new_products
-                continue
-        elif field == "status":
-            print("Type Y to show status list to change status. Anything else will skip")
-            confirm = input("Status?: ")
-            if confirm.lower() != "y":
-                continue
+                name = name_input
+        elif field == "customer_address":
+            print(field + " | " + data_list[new_index][field])
+            print("Type name to change to. Leave blank to not change. 0 to exit and cancel all changes")
+            address_input = input("New Address: ")
+            if address_input == "0":
+                return "cancel"
             else:
-                new_status = get_new_status()
-                if new_status == "error": return "error"
-                elif new_status == "cancel": return "cancel"
-                orders_list[new_index][field] = status_list[new_status]
-                continue
-        elif field == "courier":
-            print("Type Y to show courier list to add courier. Anything else will skip")
-            confirm = input("Couriers?: ")
-            if confirm.lower() != "y":
-                continue
+                address = address_input
+        elif field == "customer_phone":
+            print(field + " | " + data_list[new_index][field])
+            print("Type name to change to. Leave blank to not change. 0 to exit and cancel all changes")
+            number_input = input("New Number: ")
+            if number_input == "0":
+                return "cancel"
             else:
-                new_courier = get_order_couriers()
-                if new_courier == "error": return "error"
-                elif new_courier == "cancel": return "cancel"
-                orders_list[new_index][field] = new_courier
-        new_field = input(f"Change {field}: ")
-        if new_field == "0":
-            return "cancel"
-        elif len(new_field) > 0:
-            orders_list[new_index][field] = new_field.title()
-    print(" " + " | ".join(str(value)for value in orders_list[new_index].values()))      
+                number = number_input
+        elif field == "items":
+            products_data = sql_data.store_products_data()
+            sql_data.get_products_data()
+            print(("Choose New Product. Leave blank to not change. 0 to exit and cancel all changes"))
+            prod_index = input("New product: ")
+            if len(prod_index) <= 0:
+                continue
+            prod_index = check_if_range(prod_index, products_data)
+            if prod_index == "error": return "error"
+            elif prod_index == "cancel": return "cancel"
+        elif field == "courier_id":
+            couriers_data = sql_data.store_couriers_data()
+            sql_data.get_couriers_data()
+            print(("Choose New Courier. Leave blank to not change. 0 to exit and cancel all changes"))
+            courier_index = input("New Courier: ")
+            if len(courier_index) <= 0:
+                continue
+            courier_index = check_if_range(courier_index, couriers_data)
+            if courier_index == "error": return "error"
+            elif courier_index == "cancel": return "cancel"
+    sql_data.update_order_data(
+        data_list[new_index]["order_id"],
+        name_input,
+        address_input,
+        number_input,
+        prod_index + 1,
+        courier_index + 1
+        ) 
 def remove_courier():
     print("Type index of order you would to remove the courier of. Type 0 to exit to orders menu")
     index_input = input("Order: ")
@@ -142,9 +154,9 @@ def remove_courier():
         return "error"
     orders_list[new_index]["courier"] = "N/A"
     return "success"
-def check_if_range(index, list): # Checks if input is digit
+def check_if_range(index, data_list): # Checks if input is digit
     if index.isdigit() == True:
-        if int(index) - 1 < 0 or int(index) - 1 > len(list):
+        if int(index) - 1 < 0 or int(index) - 1 > len(data_list):
             return "error"
         elif index == "0":
             return "cancel"

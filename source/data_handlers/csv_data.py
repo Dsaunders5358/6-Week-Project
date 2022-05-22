@@ -7,13 +7,11 @@ def save_csv_data(list, file_name):
     dict_data = f"data/{file_name}"
     with open(dict_data, mode = "w") as data:
         if file_name == "couriers_list.csv":
-            #key_headers = ["id", "name", "number"]
-            pass
+            key_headers = ["courier_id", "courier_name", "number"]
         elif file_name == "products_list.csv":
             key_headers = ["product_id", "product_name", "price"]
         elif file_name == "orders_list.csv":
-            pass
-            #key_headers = ["id","customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
+            key_headers = ["order_id","customer_name", "customer_address", "customer_phone", "courier_id", "status", "product_id"]
         writer = DictWriter(data, fieldnames = key_headers)
         writer.writeheader()
         for num in range(len(list)):
