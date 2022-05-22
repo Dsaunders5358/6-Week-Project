@@ -1,5 +1,6 @@
 #region Import Block
-import products, couriers
+import source.menu_modules.products as products
+import source.menu_modules.couriers as couriers
 #endregion
 #region Function Block
 def add_order_input():
@@ -50,7 +51,7 @@ def get_order_products():
         new_index = check_if_range(input_index, products.products_list)
         if new_index == "error": return "error"
         elif input_index == "cancel": return "cancel"
-        customer_products.append(products.products_list[new_index]["name"])
+        customer_products.append(new_index + 1)
         print("Do you want to add another product to order?. Type N to finish adding items")
         repeat = input("Add more products?: ")
     return customer_products
@@ -65,7 +66,7 @@ def get_order_couriers():
     new_index = check_if_range(input_index, couriers.couriers_list)
     if new_index == "error": return "error"
     elif new_index == "cancel": return "cancel"
-    return couriers.couriers_list[new_index]["name"] 
+    return new_index + 1
 def update_order_status():
     print("Type index of order you would to update the status of. Type 0 to exit to orders menu")
     index = input("Order: ")
@@ -154,7 +155,7 @@ def check_if_range(index, list): # Checks if input is digit
 def get_new_status():
     for count, status in enumerate(status_list, 1):
         print(f"{count} | {status}")
-    print("What index would you like to change status to?")
+    print("What index would you like to change status to? Type 0 to cancel")
     index = input("Status: ")
     while len(index) == 0:
             print("No input, please enter index")
@@ -165,11 +166,21 @@ def get_new_status():
     elif new_status == "error":
         return "error"
     return status_list[new_status]
-    
+def delete_order():
+    print("Type index of order you wish to remove. Type 0 to cancel")
+    index = input("Order: ")
+    while len(index) == 0:
+        print("No input, please enter index")
+        index = input("Index: ")
+    order_remove = check_if_range(index, orders_list)
+    if order_remove == "cancel":
+        return "cancel"
+    elif order_remove == "error":
+        return "error"
+    orders_list.pop(order_remove)
 #endregion
 #region Variable Block        
 orders_list = []
 status_list = ["Preparing", "Out for delivery", "Delivered", "Cancelled"]
 test_list = [{"status" : "Preparing"}, {"status" : "Out for delivery"}, {"status" : "Delivered"}, {"status" : "Cancelled"}]
 #endregion
-print(sorted(test_list, key=lambda x: x["status"]))

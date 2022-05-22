@@ -1,19 +1,23 @@
 #region Import Blocks
 import logging
-import products, couriers, orders, data
+import source.menu_modules.products as products
+import source.menu_modules.couriers as couriers
+import source.menu_modules.orders as orders
+import source.data_handlers.csv_data as data
+import source.data_handlers.sql_data as sql_data
 #endregion
 #region Function Blocks
 def program_start(): #Program run loop. Saves and Loads data
-    data.load_csv_data("products.csv")
+    #data.load_csv_data("products.csv")
     data.load_csv_data("couriers.csv")
     data.load_csv_data("orders.csv")
     menu = show_main_menu()
     while menu != "exit":
         menu = move_to_menu(menu)
     print("Exiting App\nGoodbye")
-    data.save_csv_data(products.products_list, "products.csv")
-    data.save_csv_data(couriers.couriers_list, "couriers.csv")
-    data.save_csv_data(orders.orders_list, "orders.csv")
+    sql_data.save_to_csv("products_list.csv")
+    #data.save_csv_data(couriers.couriers_list, "couriers.csv")
+    #data.save_csv_data(orders.orders_list, "orders.csv")
 def generate_menu_options(*options):
     index = 1
     for option in options:
@@ -71,6 +75,8 @@ def move_to_menu(menu):  # For each string returned, move to a differet menu
         return show_orders_update_menu()
     elif menu == "orders del courier":
         return show_orders_del_courier_menu()
+    elif menu == "orders delete":
+        return show_orders_del_order_menu()
 def show_type_main_menu(type):
     print_title_stars("{} menu".format(type.title())) 
     generate_menu_options(f"Show current {type}s",f"Add new {type}" , f"Update Existing {type}s", f"Delete a {type}")
@@ -78,9 +84,9 @@ def show_type_main_menu(type):
     nav = input("Option: ")
     if nav == "1":
         if type == "product":
-            data.print_data_list(products.products_list)
+            products.print_product_data()
         elif type == "courier":
-            data.print_data_list(couriers.couriers_list)
+            couriers.print_courier_data()
         input("Press Enter to Continue")
         return f"{type}s main"
     elif nav == "2":
@@ -101,14 +107,16 @@ def show_product_add_menu():
     cancel = products.add_new_product()
     if cancel == "cancel":
         print("Cancelling input. Returning to products menu")
+    elif cancel == "error":
+        print("Invalid Input. Returning to products menu")    
     else:
         print("Product successfully added. Returning to products Menu")
     return "products main"
 def show_product_del_menu():
     print_title_stars("Delete a Product")
-    data.print_data_list(products.products_list)
+    list = sql_data.get_products_data()
     print("Type index of product you wish to delete. 0 will exit")
-    delete = products.delete_product()
+    delete = products.delete_product(list)
     if delete == "exit":
         print("Cancelling delete. Returning to products menu")
     elif delete == "error":
@@ -120,10 +128,10 @@ def show_product_del_menu():
     return "products main"
 def show_product_update_menu():
     print_title_stars("Update a product")
-    data.print_data_list(products.products_list)
+    get_list = sql_data.get_products_data()
     print("Type index of product you wish to change. 0 will exit")
     update = input("Option: ")
-    confirm = products.update_product(update)
+    confirm = products.update_product(update, get_list)
     if confirm == "cancel":
         print("Cancelling Changes. Returning to products menu")
     elif confirm == "success":
@@ -136,6 +144,8 @@ def show_courier_add_menu():
     cancel = couriers.add_new_courier()
     if cancel == "cancel":
         print("Cancelling input. Returning to courier menu")
+    elif cancel == "error":
+        print("Invalid input, Returning to couriers menu")
     else:
         print("Courier successfully added. Returning to couriers Menu")
     return "couriers main"
@@ -168,7 +178,7 @@ def show_courier_update_menu():
     return "couriers main"
 def show_orders_main_menu():
     print_title_stars("Orders Main Menu")
-    generate_menu_options("Show Existing Orders", "Add new order", "Update order status", "Update order details", "Delete Courier from Order")
+    generate_menu_options("Show Existing Orders", "Add new order", "Update order status", "Update order details", "Delete Courier from Order", "Delete Whole Order")
     print("Please choose an option")
     nav = input("Option: ")
     if nav == "1":
@@ -193,6 +203,8 @@ def show_orders_main_menu():
         return "orders update"
     elif nav == "5":
         return "orders del courier"
+    elif nav == "6":
+        return "orders delete"
     elif nav == "0":
         return "main menu"
     else:
@@ -244,6 +256,18 @@ def show_orders_del_courier_menu():
         print("Invalid command entry. Returning to orders menu")
         return "orders main"
     print("Courier successfully removed from order")
+    return "orders main"
+def show_orders_del_order_menu():
+    print_title_stars("Delete Entire Order")
+    data.print_data_list(orders.orders_list)
+    removed = orders.delete_order()
+    if removed == "cancel":
+        print("Removal Cancelled. Returning to orders menu")
+        return "orders main"
+    elif removed == "error":
+        print("Invalid command entry. Returning to orders menu")
+        return "orders main"
+    print("Order Successfully deleted. Returning to orders menu")
     return "orders main"
 #endregion
 #region Variable Block

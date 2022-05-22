@@ -1,20 +1,25 @@
-import products, couriers, orders
+import source.menu_modules.products as products
+import source.menu_modules.couriers as couriers
+import source.menu_modules.orders as orders
 from csv import DictReader, DictWriter
+from dotenv import load_dotenv
 def save_csv_data(list, file_name):
-    dict_data = f"source/data/{file_name}"
+    dict_data = f"data/{file_name}"
     with open(dict_data, mode = "w") as data:
-        if file_name == "couriers.csv":
-            key_headers = ["id", "name", "number"]
-        elif file_name == "products.csv":
-            key_headers = ["id", "name", "price"]
-        elif file_name == "orders.csv":
-            key_headers = ["id","customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
+        if file_name == "couriers_list.csv":
+            #key_headers = ["id", "name", "number"]
+            pass
+        elif file_name == "products_list.csv":
+            key_headers = ["product_id", "product_name", "price"]
+        elif file_name == "orders_list.csv":
+            pass
+            #key_headers = ["id","customer_name", "customer_address", "customer_phone", "courier", "status", "items"]
         writer = DictWriter(data, fieldnames = key_headers)
         writer.writeheader()
         for num in range(len(list)):
             writer.writerow(list[num])
 def load_csv_data(file_name):
-    data_path = f"source/data/{file_name}"
+    data_path = f"data/{file_name}"
     with open(data_path, "r") as data:
         list = DictReader(data)
         if file_name == "products.csv":

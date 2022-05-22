@@ -1,9 +1,16 @@
+import pymysql
+import os
+from dotenv import load_dotenv
 #region Function Block
 def add_new_courier(): # Format courier and add to list
     name = input("Name: ").title()
     if name == "0" or len(name) <= 0: return "cancel"
     print(f"Please enter phone number of {name}")
     num = input("Number: ")
+    try:
+        int(num)
+    except:
+        return "error"
     if num == "0" or len(num) <= 0: return "cancel"
     new_courier = {"id" : str(len(couriers_list) + 1),  "name" : name, "number" : num}
     couriers_list.append(new_courier)
@@ -48,7 +55,23 @@ def check_if_range(index, list): # Checks if input is digit
             return int(index) - 1
     else:
         return "error"
+def print_courier_data():
+    cursor = connection.cursor()
+    cursor.execute('SELECT * from couriers')
+    couriers = cursor.fetchall()
+    for count, row in enumerate(couriers, 1):
+        if count > 9:
+            print(f"{count} | {row[1]} | {row[2]}")
+        else:
+            print(f"{count}  | {row[1]} | {row[2]}")
+    cursor.close()
+    connection.close()
 #endregion
 #region Variable Block
+load_dotenv()
+host = os.environ.get("mysql_host")
+user = os.environ.get("mysql_user")
+password = os.environ.get("mysql_pass")
+database = os.environ.get("mysql_db")
 couriers_list = []
 #endregion

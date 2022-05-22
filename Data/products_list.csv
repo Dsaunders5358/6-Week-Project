@@ -1,11 +1,12 @@
-id,name,price
+product_id,product_name,price
 1,Shepherds Pie,8.31
-2,Beans On Toast,3.58
+2,Beans on Toast,3.58
 3,Fried Bread,1.09
 4,Cheese Toastie,2.86
 5,Cheese 'N' Ham Toastie,4.59
-6,Sausage And Bacon Baguette,6.34
+6,Sausage and Bacon Baguette,6.34
 7,Full English Breakfast,9.26
-8,Omelette,2.94
+8,Testing,1.23
 9,Bacon Sandwhich,4.05
 10,Cereal,3.67
+15,Breaded Substance,4.56
