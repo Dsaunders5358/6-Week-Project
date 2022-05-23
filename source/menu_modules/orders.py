@@ -145,14 +145,15 @@ def update_order_details():
         courier_index + 1
         ) 
 def remove_courier():
+    data_list = sql_data.get_orders_data()
     print("Type index of order you would to remove the courier of. Type 0 to exit to orders menu")
     index_input = input("Order: ")
-    new_index = check_if_range(index_input, orders_list)
+    new_index = check_if_range(index_input, data_list)
     if new_index == "cancel":
         return "cancel"
     elif new_index == "error":
         return "error"
-    orders_list[new_index]["courier"] = "N/A"
+    sql_data.remove_courier_from_order(data_list[new_index]["order_id"])
     return "success"
 def check_if_range(index, data_list): # Checks if input is digit
     if index.isdigit() == True:
@@ -179,20 +180,19 @@ def get_new_status():
         return "error"
     return status_list[new_status]
 def delete_order():
+    data_list = sql_data.get_orders_data()
     print("Type index of order you wish to remove. Type 0 to cancel")
     index = input("Order: ")
     while len(index) == 0:
         print("No input, please enter index")
         index = input("Index: ")
-    order_remove = check_if_range(index, orders_list)
+    order_remove = check_if_range(index, data_list)
     if order_remove == "cancel":
         return "cancel"
     elif order_remove == "error":
         return "error"
-    orders_list.pop(order_remove)
+    sql_data.remove_order(data_list[order_remove]["order_id"])
 #endregion
 #region Variable Block        
-orders_list = []
 status_list = ["Preparing", "Out for delivery", "Delivered", "Cancelled"]
-test_list = [{"status" : "Preparing"}, {"status" : "Out for delivery"}, {"status" : "Delivered"}, {"status" : "Cancelled"}]
 #endregion

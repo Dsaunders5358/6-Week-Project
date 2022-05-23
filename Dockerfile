@@ -5,13 +5,13 @@ FROM python:3.9
 WORKDIR /source/
 
 # Copy everything from our project root into our WORK DIRECTORY directory
-COPY 6_week_project .
+COPY . .
 
 # Install dependencies
-#RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Give our container internet access
 #EXPOSE 80
 
 # Execute this command on start
-ENTRYPOINT ["python", "app.py"]
+ENTRYPOINT ["python", "source/app.py"]

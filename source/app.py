@@ -124,19 +124,6 @@ def show_product_del_menu():
         print("Index not found. Returning to products menu")
     return "products main"
 def show_product_update_menu():
-    print_title_stars("Update a product")
-    get_list = sql_data.get_products_data()
-    print("Type index of product you wish to change. 0 will exit")
-    update = input("Option: ")
-    confirm = products.update_product(update, get_list)
-    if confirm == "cancel":
-        print("Cancelling Changes. Returning to products menu")
-    elif confirm == "success":
-        print("Change Successful. Returning to products menu")
-    elif confirm == "error":
-        print("Invalid index input. Returning to products menu")
-    return "products main"
-def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
     print("Leave field blank or type 0 to exit")
     print("Please enter name of new product to add")
@@ -234,7 +221,6 @@ def show_orders_update_menu():
     return "orders main"
 def show_orders_del_courier_menu():
     print_title_stars("Delete Courier from Order")
-    data.print_data_list(orders.orders_list)
     removed = orders.remove_courier()
     if removed == "cancel":
         print("Removal Cancelled. Returning to orders menu")
@@ -246,7 +232,6 @@ def show_orders_del_courier_menu():
     return "orders main"
 def show_orders_del_order_menu():
     print_title_stars("Delete Entire Order")
-    data.print_data_list(orders.orders_list)
     removed = orders.delete_order()
     if removed == "cancel":
         print("Removal Cancelled. Returning to orders menu")
@@ -269,5 +254,5 @@ except Exception as log:
     logger.exception(log)
     sql_data.save_to_csv("products_list.csv")
     sql_data.save_to_csv("couriers_list.csv")
-    #data.save_csv_data(orders.orders_list, "orders.csv")
+    sql_data.save_to_csv("orders_list.csv")
     print("Unkown Error has Occured. Saving data and exiting application")
