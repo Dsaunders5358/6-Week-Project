@@ -3,7 +3,6 @@ import logging
 import source.menu_modules.products as products
 import source.menu_modules.couriers as couriers
 import source.menu_modules.orders as orders
-import source.data_handlers.csv_data as data
 import source.data_handlers.sql_data as sql_data
 #endregion
 #region Function Blocks
@@ -124,6 +123,19 @@ def show_product_del_menu():
         print("Index not found. Returning to products menu")
     return "products main"
 def show_product_update_menu():
+    print_title_stars("Update a product")
+    get_list = sql_data.get_products_data()
+    print("Type index of product you wish to change. 0 will exit")
+    update = input("Option: ")
+    confirm = products.update_product(update, get_list)
+    if confirm == "cancel":
+        print("Cancelling Changes. Returning to products menu")
+    elif confirm == "success":
+        print("Change Successful. Returning to products menu")
+    elif confirm == "error":
+        print("Invalid index input. Returning to products menu")
+    return "products main"
+def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
     print("Leave field blank or type 0 to exit")
     print("Please enter name of new product to add")
