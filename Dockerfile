@@ -2,7 +2,7 @@
 FROM python:3.9
 
 # Select a directory within our container
-WORKDIR /source/
+WORKDIR /./
 
 # Copy everything from our project root into our WORK DIRECTORY directory
 COPY . .

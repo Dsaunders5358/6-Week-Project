@@ -5,7 +5,7 @@ import source.menu_modules.couriers as couriers
 import source.menu_modules.orders as orders
 import source.data_handlers.sql_data as sql_data
 #endregion
-#region Function Blocks
+#region Menu Functions
 def program_start(): #Program run loop. Saves data to CSV when done
     menu = show_main_menu()
     while menu != "exit":
@@ -29,7 +29,7 @@ def print_title_stars(title):  #Formatting stars via title
     print(stars)
 def show_main_menu():  # First menu user will see
     print_title_stars("Main Menu")
-    print("Please Choose a Menu Option.\n1 | Products\n2 | Couriers\n3 | Orders\n0 | Exit Program")
+    print("Please Choose a Menu Option.\n1 | Products\n2 | Couriers\n3 | Orders\n4 | Inventory\n0 | Exit Program")
     nav = input("Option: ")
     if nav == "1":
         return "products main"
@@ -37,12 +37,14 @@ def show_main_menu():  # First menu user will see
         return "couriers main"
     elif nav == "3":
         return "orders main"
+    elif nav == "4":
+        return "inv main"
     elif nav == "0":
         return "exit"
     else:
         print("Command not recognised. Returning to menu")
         return "main menu"
-def move_to_menu(menu):  # For each string returned, move to a differet menu
+def move_to_menu(menu):  # For each string returned, move to a different menu
     if menu == "main menu":
         return show_main_menu()
     elif menu == "products main":
@@ -73,7 +75,9 @@ def move_to_menu(menu):  # For each string returned, move to a differet menu
         return show_orders_del_courier_menu()
     elif menu == "orders delete":
         return show_orders_del_order_menu()
-def show_type_main_menu(type):
+    elif menu == "inv main":
+        return show_inventory_main_menu()
+def show_type_main_menu(type): # Show different menu options based on if product or courier
     print_title_stars("{} menu".format(type.title())) 
     generate_menu_options(f"Show current {type}s",f"Add new {type}" , f"Update Existing {type}s", f"Delete a {type}")
     print("Please choose an option")
@@ -96,6 +100,8 @@ def show_type_main_menu(type):
     else:
         print("Option not available. Please choose another option.")
         return f"{type}s main"
+#endregion
+#region Products Menus
 def show_product_add_menu():
     print_title_stars("Add New Product Menu")
     print("Leave field blank or type 0 to exit")
@@ -135,6 +141,8 @@ def show_product_update_menu():
     elif confirm == "error":
         print("Invalid index input. Returning to products menu")
     return "products main"
+#endregion
+#region Couriers Menus
 def show_courier_add_menu():
     print_title_stars("Add New Courier Menu")
     print("Leave field blank or type 0 to exit")
@@ -147,7 +155,7 @@ def show_courier_add_menu():
     else:
         print("Courier successfully added. Returning to couriers Menu")
     return "couriers main"
-def show_courier_del_menu():
+def show_courier_del_menu(): # Delete courier from courier list
     print_title_stars("Delete a Courier")
     data_list = sql_data.get_couriers_data()
     print("Type index of courier you wish to delete. 0 will exit")
@@ -174,6 +182,8 @@ def show_courier_update_menu():
     elif confirm == "error":
         print("Invalid index entered. Returning to couriers menu")
     return "couriers main"
+#endregion
+#region Order Menus
 def show_orders_main_menu():
     print_title_stars("Orders Main Menu")
     generate_menu_options("Show Existing Orders", "Add new order", "Update order status", "Update order details", "Delete Courier from Order", "Delete Whole Order")
@@ -231,7 +241,7 @@ def show_orders_update_menu():
         return "orders main"
     print("Order details changed successfully")
     return "orders main"
-def show_orders_del_courier_menu():
+def show_orders_del_courier_menu(): # Removes courier from order
     print_title_stars("Delete Courier from Order")
     removed = orders.remove_courier()
     if removed == "cancel":
@@ -253,6 +263,29 @@ def show_orders_del_order_menu():
         return "orders main"
     print("Order Successfully deleted. Returning to orders menu")
     return "orders main"
+#endregion
+#region Inventory Menus
+def show_inventory_main_menu():
+    print_title_stars("Inventory Main Menu")
+    generate_menu_options("Total Products Sold")
+    print("Please Choose an option")
+    nav = input("Option: ")
+    if nav == "1":
+        get_order_product_total()
+        return "inv main"
+    elif nav == "0":
+        return "main menu"
+def get_order_product_total():
+    print_title_stars("Total Products Sold")
+    product_data, id_data, price_data = sql_data.get_order_product_count()
+    total_price = 0
+    print("{:<7} | {:<26} | {:<6}".format("Prod ID", "Product Name", "Number Sold")) # Formats Total Count 
+    for (products, count), (id, count2) in zip(product_data.items(), id_data.items()):
+        print("{:<7} | {:<26} | {:<6}".format(id, products, count))
+    for product_price, quantity in price_data.items():
+        total_price += (product_price * quantity)
+    print(f"Total value of sold items is £{total_price}")
+    input("Press Enter to Continue ")
 #endregion
 #region Variable Block
 logging.basicConfig(level=logging.DEBUG)

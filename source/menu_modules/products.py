@@ -14,7 +14,11 @@ def add_new_product():
     sql_data.add_product_data(name, price)
 def delete_product(data_list):
     index = input("Index: ")
+    if len(index) <= 0:
+        return "error"
     new_index = check_if_range(index, data_list)
+    if new_index == "error": return "error"
+    elif new_index =="cancel" : return "cancel"
     if new_index >= 0 and new_index < len(data_list):
         sql_data.remove_product_data(new_index)
         return "success"
@@ -34,6 +38,10 @@ def update_product(index, data_list):
     elif input_name == "0":
         return "cancel"
     input_price = input("Change price to: £")
+    try:
+        float(input_price)
+    except ValueError:
+        return "error"
     if len(input_price) <= 0:
             print("No Change")
     sql_data.update_product_data(new_index, input_name, input_price)

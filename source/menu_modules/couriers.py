@@ -7,9 +7,11 @@ def add_new_courier():
     num = input("number: ")
     if num == "0" or len(num) <= 0: return "cancel"
     sql_data.add_courier_data(name, num)
-def delete_courier(data_list): # Pop courier from list
+def delete_courier(data_list): # remove courier from database
     index = input("Index: ")
     new_index = check_if_range(index, data_list)
+    if new_index == "error": return "error"
+    elif new_index =="cancel" : return "cancel"
     if new_index >= 0 and new_index < len(data_list):
         sql_data.remove_courier_data(new_index)
         return "success"
