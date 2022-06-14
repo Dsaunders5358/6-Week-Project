@@ -1,0 +1,25 @@
+name: list-repo
+
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  list-repo-files:
+    name: List files in repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v3
+      - name: list-dir
+        run: ls -laR # Recursively list directory contents
+  count-python-lines:
+    name: Count Lines in python code on repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: install pygount
+        run: pip install pygount
+      - name: count lines in code
+        run: pygount --format=summary ./source
