@@ -15,10 +15,6 @@ jobs:
         uses: actions/checkout@v3
       - name: list-dir
         run: ls -laR # Recursively list directory contents
-  count-python-lines:
-    name: Count Lines in python code on repo
-    runs-on: ubuntu-latest
-    steps:
       - name: install pygount
         run: pip install pygount
       - name: count lines in code
